@@ -12,5 +12,8 @@ def get_chat_ids():
     return chats
 
 
-
+def is_admin(login):
+    condition = "login = '{}'".format(login)
+    is_true = len(select_from_table('admins', 'login', condition)) == 1
+    return is_true
 

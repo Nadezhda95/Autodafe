@@ -46,9 +46,6 @@ def insert_list_into_table(values, table, columns):
     conn.close()
 
 
-#insert_list_into_table(['11111', 'test_name'], 'chats', '(chatID,chat_name)')
-
-
 def select_from_table(table, columns, conditions=''):
     conn = sqlite3.connect("autodafe.db")
     cur = conn.cursor()
@@ -64,7 +61,7 @@ def select_from_table(table, columns, conditions=''):
     return sql
 
 
-# print(sqlite_table_schema())
+#print(select_from_table('admins', 'login'))
 
 
 def drop_table(table):
