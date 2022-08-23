@@ -2,12 +2,10 @@
 from aiogram import Bot, Dispatcher, types, executor
 
 from db import insert_list_into_table
-from support_functions import cur_user_id_finder, get_chat_ids
+from support_functions import cur_user_id_finder, get_chat_ids, is_admin
 from dotenv import load_dotenv, dotenv_values
-load_dotenv()
-import os
 
-token = os.environ.get("api-token")
+load_dotenv()
 
 config = dotenv_values(".env")
 bot = Bot(config.get('TOKEN'))
@@ -18,6 +16,7 @@ dp = Dispatcher(bot)
 async def welcome(message: types.Message):
     await message.answer('Bot started')
 
+
 @dp.message_handler(commands=['link'])
 async def add_chat(message: types.Message):
     print(message.chat.id)
@@ -25,9 +24,10 @@ async def add_chat(message: types.Message):
     insert_list_into_table([message.chat.id, message.chat.title], 'chats_prod', ('chatID', 'chat_name'))
     await message.answer('Чат успешно добавлен')
 
+
 @dp.message_handler(commands=['ban'])
 async def kick_user(message: types.Message):
-    if message.from_user.username == 'SerDenis' or message.from_user.username == 'brainwashed_from_rock':
+    if is_admin(message.from_user.username):
         user_to_ban = message.text.split("/ban ", 1)[1]
         user_id = cur_user_id_finder(user_to_ban)[0][0]
         print(user_id)
