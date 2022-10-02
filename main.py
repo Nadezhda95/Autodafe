@@ -29,14 +29,23 @@ async def add_chat(message: types.Message):
 async def kick_user(message: types.Message):
     if is_admin(message.from_user.username):
         user_to_ban = message.text.split("/ban ", 1)[1]
-        user_id = cur_user_id_finder(user_to_ban)[0][0]
+        user_id = cur_user_id_finder(login=user_to_ban, user_id='')[0][0]
         print(user_id)
         chat_ids = get_chat_ids()
         for i in range(len(chat_ids)):
             try:
                 await bot.kick_chat_member(chat_id=chat_ids[i][0], user_id=user_id)
-            except:
+            finally:
                 continue
 
+
+@dp.message_handler()
+async def save_user_id(message: types.Message):
+    user_id = message.from_user.id
+    username = ''
+    if not cur_user_id_finder(user_id=user_id, login=''):
+        if message.from_user.username != '':
+            username = message.from_user.username
+        insert_list_into_table([username, user_id], 'users', ('user', 'userID'))
 
 executor.start_polling(dp, skip_updates=True)
