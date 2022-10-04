@@ -47,5 +47,8 @@ async def save_user_id(message: types.Message):
         if message.from_user.username != '':
             username = message.from_user.username
         insert_list_into_table([username, user_id], 'users', ('user', 'userID'))
+    if message.forward_from:
+        insert_list_into_table([message.forward_from.username, message.forward_from.id], 'users', ('user', 'userID'))
+        await message.answer("Переслано от: {0} {1}".format(message.forward_from.id, message.forward_from.username))
 
 executor.start_polling(dp, skip_updates=True)
